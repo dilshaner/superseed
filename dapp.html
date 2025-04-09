@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="dapp.css">
+    <meta charset="UTF-8" />
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  </head>
+  <body>
+    <div id="borrowPopup">
+      <h2>Superseed Tree Vault</h2>
+      <button id="closeBorrowPopup">Close</button>
+    
+      <!-- Tab Inputs -->
+      <input type="radio" id="tab-1" name="tabs" class="tabs__input" checked />
+      <input type="radio" id="tab-2" name="tabs" class="tabs__input" />
+      <input type="radio" id="tab-3" name="tabs" class="tabs__input" />
+      <input type="radio" id="tab-4" name="tabs" class="tabs__input" />
+    
+      <!-- Tab Labels -->
+      <div class="tabs__labels">
+        <label for="tab-1" class="tabs__label">Loan & Repay</label>
+        <label for="tab-2" class="tabs__label">Auction</label>
+        <label for="tab-3" class="tabs__label">Loan Analysis</label>
+        <label for="tab-4" class="tabs__label">F.A.Q</label>
+      </div>
+    
+      <!-- Tab Content -->
+      <div class="tabs__content">
+        <!-- Loan and Repay Tab (unchanged) -->
+        <div class="tabs__panel" id="tab-panel-1">
+          <div class="info-section">
+            <p class="exchange-rates">
+              Exchange Rates: 
+              <span>1 Platinum = <span id="platinumRate">20</span> Coins</span>,
+              <span>1 Gold = <span id="goldRate">10</span> Coins</span>,
+              <span>1 Iron = <span id="ironRate">5</span> Coins</span>
+            </p>
+            <div class="loan-type-selector">
+              <p>Loan Type:</p>
+              <div class="loan-type-options">
+                <label class="loan-type-option">
+                  <input type="radio" name="loanType" value="normal" checked />
+                  Normal (150% Collateral, 1% Hourly Fee)
+                </label>
+                <label class="loan-type-option">
+                  <input type="radio" name="loanType" value="supercollateral" />
+                  Supercollateral (500% Collateral, No Fee)
+                </label>
+              </div>
+            </div>
+          </div>
+          <div id="vaultContainer">
+            <div id="borrowSection">
+              <h3>Add Collateral</h3>
+              <div class="collateral-inputs">
+                <div class="collateral-item">
+                  <span>Platinum (Available: <span id="availablePlatinum">0</span>)</span>
+                  <input type="range" id="platinumSlider" min="0" max="0" value="0" />
+                  <span id="platinumPledgeValue">0</span>
+                </div>
+                <div class="collateral-item">
+                  <span>Gold (Available: <span id="availableGold">0</span>)</span>
+                  <input type="range" id="goldSlider" min="0" max="0" value="0" />
+                  <span id="goldPledgeValue">0</span>
+                </div>
+                <div class="collateral-item">
+                  <span>Iron (Available: <span id="availableIron">0</span>)</span>
+                  <input type="range" id="ironSlider" min="0" max="0" value="0" />
+                  <span id="ironPledgeValue">0</span>
+                </div>
+              </div>
+              <p>Collateral Worth: <span id="totalCollateral">0</span> Coins</p>
+              <p>Borrowable: <span id="borrowableAmount">0</span> Coins <span id="feeInfo">(1% Hourly Fee)</span></p>
+              <button id="borrowButton">Borrow</button>
+            </div>
+            
+            <div id="repaymentSection">
+              <h3>Repay Loan</h3>
+              <div id="activeLoans">
+                <ul id="loanList" class="loan-list"></ul>
+                <div id="loanPagination" class="loan-pagination"></div>
+              </div>
+              <button id="repayButton">Repay Selected Loan</button>
+              <button id="unstakeButton">Unstake</button>
+            </div>
+          </div>
+        </div>
+        <!-- Auction Tab -->
+<div class="tabs__panel" id="tab-panel-2">
+  <p class="auction-note">Having Superseeds in your account boosts your leaderboard rank. Note: Every bid requires a 50 coin fee.</p>
+  <div id="auction-info">
+    <p>Auction Ends In: <span id="countdown">Waiting...</span></p>
+    <p>Superseeds Available: <span id="superseed-amount">N/A</span></p>
+  </div>
+  <div id="bidding-section">
+    <input type="number" id="bid-amount" placeholder="Enter bid amount" min="1">
+    <button id="bidButton">Place Bid</button> <!-- Changed to id -->
+    <p id="bid-error" style="color: red;"></p>
+  </div>
+  <div id="bid-list">
+    <h3>Current Bids</h3>
+    <ul id="bids"><li>No bids yet</li></ul>
+  </div>
+  <div id="recent-results">
+    <h3>Recent Auction Results</h3>
+    <button id="refresh-results-btn">Refresh Results</button>
+    <ul id="results"><li>No results yet</li></ul>
+  </div>
+</div>
+        <div class="tabs__panel" id="tab-panel-3">Loan Analysis Content Placeholder</div>
+       <div class="tabs__panel" id="tab-panel-4">
+
+  <div class="faq-section">
+  
+    <ul>
+      <li>
+        <strong>What are the types of loans available?</strong>
+        <p>There are two types of loans: Normal Loans and Super-Collateralized Loans.</p>
+      </li>
+      <li>
+        <strong>How do Normal Loans work?</strong>
+        <p>Normal Loans require 150% collateral and charge a 1% hourly interest fee. Interest is deducted from your coins and sent to your Vault.</p>
+      </li>
+      <li>
+        <strong>What are Super-Collateralized Loans?</strong>
+        <p>Super-Collateralized Loans require 500% collateral but have no interest fees. These loans are repaid automatically using funds from your Vault.</p>
+      </li>
+      <li>
+        <strong>What happens if I don't pay the interest on time?</strong>
+        <p>If you don't have enough coins to pay the interest, the system will pause interest deductions until sufficient funds are available.</p>
+      </li>
+      <li>
+        <strong>How are Super-Collateralized Loans repaid?</strong>
+        <p>Every 4 hours, the system checks your Vault balance. If there are enough funds, it uses them to repay your Super-Collateralized Loans proportionally.</p>
+      </li>
+      <li>
+        <strong>Can I repay my loans early?</strong>
+        <p>Yes, you can repay your loans at any time. The repayment amount includes the loan principal and any outstanding interest (for Normal Loans).</p>
+      </li>
+      <li>
+        <strong>What happens if only part of my Super-Collateralized Loan is repaid?</strong>
+        <p>If only a portion of the loan is repaid, the remaining balance will stay active until fully repaid.</p>
+      </li>
+    </ul>
+  </div>
+
+  <div class="faq-section">
+    <h4>Auction System</h4>
+    <ul>
+      <li>
+        <strong>What is the purpose of the Auction System?</strong>
+        <p>The Auction System allows users to bid on Superseeds, which boost their leaderboard rank and provide in-game benefits.</p>
+      </li>
+      <li>
+        <strong>How often do auctions occur?</strong>
+        <p>Auctions occur every 4 hours. Each auction lasts for the full duration unless manually ended.</p>
+      </li>
+      <li>
+        <strong>How many Superseeds are available in each auction?</strong>
+        <p>The number of Superseeds available in each auction is randomly generated between 5 and 10.</p>
+      </li>
+      <li>
+        <strong>Is there a fee for placing a bid?</strong>
+        <p>Yes, every bid requires a 50-coin fee. This fee is non-refundable and is added to your Vault.</p>
+      </li>
+      <li>
+        <strong>What happens if I win the auction?</strong>
+        <p>If you win, you receive the Superseeds, and your bid amount is deducted from your coins. Other participants' bids are refunded (excluding the 50-coin fee).</p>
+      </li>
+      <li>
+        <strong>What happens if no one bids in an auction?</strong>
+        <p>If no bids are placed, the Superseeds remain unclaimed, and the auction ends without a winner.</p>
+      </li>
+      <li>
+        <strong>How can I view recent auction results?</strong>
+        <p>You can view the results of the last 5 auctions in the "Recent Results" section of the Auction tab.</p>
+      </li>
+    </ul>
+  </div>
+</div>
+<!---->
+      </div>
+    </div>
+  </body>
+</html>

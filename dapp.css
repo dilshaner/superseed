@@ -1,0 +1,570 @@
+/* Import futuristic font */
+@import url("https://fonts.googleapis.com/css2?family=Tomorrow:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap");
+
+#borrowPopup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, rgba(10, 25, 47, 0.95), rgba(0, 0, 0, 0.85));
+  padding: 20px;
+  border: 1px solid #00BCD4;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.5), inset 0 0 8px rgba(0, 188, 212, 0.2);
+  z-index: 1000;
+  width: 900px;
+  max-height: 800px;
+  color: #E0F7FA;
+  font-family: "Tomorrow", sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+h2 {
+  text-align: center;
+  color: #00BCD4;
+  font-family: "Orbitron", sans-serif;
+  text-shadow: 0 0 8px rgba(0, 188, 212, 0.5);
+  margin: 0;
+  font-size: 24px;
+}
+
+.tabs__labels {
+  display: flex;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tabs__input {
+  display: none;
+}
+
+.tabs__label {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #E0F7FA;
+  font-weight: 600;
+}
+
+.tabs__label:hover {
+  background: rgba(0, 188, 212, 0.2);
+}
+
+#tab-1:checked ~ .tabs__labels label[for="tab-1"],
+#tab-2:checked ~ .tabs__labels label[for="tab-2"],
+#tab-3:checked ~ .tabs__labels label[for="tab-3"],
+#tab-4:checked ~ .tabs__labels label[for="tab-4"] {
+  background: rgba(0, 188, 212, 0.3);
+  color: #00BCD4;
+  border-bottom: 3px solid #00BCD4;
+}
+
+.tabs__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 0;
+}
+
+.tabs__panel {
+  display: none;
+  height: 100%;
+}
+
+#tab-1:checked ~ .tabs__content #tab-panel-1,
+#tab-2:checked ~ .tabs__content #tab-panel-2,
+#tab-3:checked ~ .tabs__content #tab-panel-3,
+#tab-4:checked ~ .tabs__content #tab-panel-4 {
+  display: block;
+}
+
+#vaultContainer {
+  display: flex;
+  gap: 20px;
+  height: 100%;
+}
+
+#borrowSection,
+#repaymentSection {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 10px rgba(0, 188, 212, 0.2);
+}
+
+h3 {
+  color: #00BCD4;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+}
+
+.info-section {
+  margin-bottom: 10px;
+}
+
+.exchange-rates span {
+  margin-right: 10px;
+  font-size: 14px;
+}
+
+.loan-type-selector {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between "Loan Type:" and the options */
+  }
+  
+  .loan-type-selector p {
+    margin: 0; /* Remove default margin from p */
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  .loan-type-options {
+    display: flex;
+    gap: 20px; /* Space between the radio button options */
+  }
+  
+  .loan-type-option {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin: 0; /* Remove vertical margin since we're horizontal now */
+  }
+  
+  input[type="radio"] {
+    accent-color: #00BCD4;
+    margin-right: 8px;
+  }
+
+.collateral-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.collateral-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: #00BCD4;
+}
+
+button {
+  padding: 5px 10px;
+  background: linear-gradient(135deg, #00BCD4, #007bff);
+  border: none;
+  color: #E0F7FA;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Orbitron", sans-serif;
+  font-weight: 600;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.5);
+}
+
+#closeBorrowPopup {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ff6361, #e63946);
+  padding: 8px 16px;
+  font-size: 14px;
+  border: 1px solid #00BCD4;
+  border-radius: 8px;
+  color: #E0F7FA;
+  font-family: "Orbitron", sans-serif;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#closeBorrowPopup:hover {
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 99, 71, 0.5);
+}
+
+#activeLoans {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.loan-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.loan-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 188, 212, 0.3);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+}
+
+.loan-card:hover {
+  background: rgba(0, 188, 212, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.5);
+}
+
+.loan-pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.loan-pagination button {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: linear-gradient(135deg, #00BCD4, #007bff);
+  border: none;
+  color: #E0F7FA;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.loan-pagination button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.5);
+}
+
+#repayButton {
+ 
+margin-top: 15px;
+
+}
+  
+  #repayButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 188, 212, 0.5);
+  }
+
+  /* Auction Tab Panel */
+.tabs__panel#tab-panel-2 {
+  background: linear-gradient(135deg, rgba(10, 25, 47, 0.95), rgba(0, 0, 0, 0.85));
+  padding: 20px;
+  border: 1px solid #00BCD4;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.5), inset 0 0 8px rgba(0, 188, 212, 0.2);
+  color: #E0F7FA;
+  font-family: "Tomorrow", sans-serif;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Heading */
+.tabs__panel#tab-panel-2 h2 {
+  text-align: center;
+  color: #00BCD4;
+  font-family: "Orbitron", sans-serif;
+  text-shadow: 0 0 8px rgba(0, 188, 212, 0.5);
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* Auction Info Section */
+#auction-info {
+  margin-bottom: 20px;
+}
+
+#auction-info p {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+#auction-info span#countdown,
+#auction-info span#superseed-amount {
+  color: #FFD700; /* Gold for emphasis */
+  font-family: "Orbitron", sans-serif;
+  font-weight: 600;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+}
+
+/* Bidding Section */
+#bidding-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+#bidding-section input#bid-amount {
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #00BCD4;
+  border-radius: 4px;
+  color: #E0F7FA;
+  font-family: "Tomorrow", sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#bidding-section input#bid-amount:focus {
+  border-color: #FFD700;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+#bidding-section button#bidButton {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #00BCD4, #007bff);
+  border: none;
+  color: #E0F7FA;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Orbitron", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#bidding-section button#bidButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.5);
+}
+
+#bidding-section p#bid-error {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Red glow for errors */
+}
+
+/* Bid List Section */
+#bid-list {
+  margin-bottom: 20px;
+}
+
+#bid-list h3 {
+  color: #00BCD4;
+  font-family: "Orbitron", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+  text-transform: uppercase;
+}
+
+#bid-list ul#bids {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 188, 212, 0.3);
+  border-radius: 4px;
+  max-height: 100px; /* Set a fixed height to limit the list size */
+  overflow-y: auto; /* Enable vertical scrolling when content exceeds height */
+  scrollbar-width: thin; /* Firefox: Slim scrollbar */
+  scrollbar-color: #00BCD4 rgba(255, 255, 255, 0.1); /* Firefox: Scrollbar colors */
+}
+
+/* Webkit (Chrome, Safari) scrollbar styling */
+#bid-list ul#bids::-webkit-scrollbar {
+  width: 8px; /* Slim scrollbar width */
+}
+
+#bid-list ul#bids::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1); /* Track color */
+  border-radius: 4px;
+}
+
+#bid-list ul#bids::-webkit-scrollbar-thumb {
+  background: #00BCD4; /* Scrollbar thumb color */
+  border-radius: 4px;
+}
+
+#bid-list ul#bids::-webkit-scrollbar-thumb:hover {
+  background: #FFD700; /* Gold on hover for interactivity */
+}
+
+#bid-list ul#bids li {
+  font-size: 14px;
+  padding: 5px 0;
+  color: #E0F7FA;
+  transition: color 0.3s ease;
+}
+
+#bid-list ul#bids li:hover {
+  color: #FFD700;
+}
+
+/* Recent Results Section */
+#recent-results {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#recent-results h3 {
+  color: #00BCD4;
+  font-family: "Orbitron", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 0;
+  text-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+  text-transform: uppercase;
+}
+
+#recent-results button#refresh-results-btn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #00BCD4, #007bff);
+  border: none;
+  color: #E0F7FA;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Orbitron", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  align-self: flex-start; /* Aligns button to the left */
+}
+
+#recent-results button#refresh-results-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.5);
+}
+
+#recent-results ul#results {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 188, 212, 0.3);
+  border-radius: 4px;
+  padding: 10px;
+}
+
+#recent-results ul#results li {
+  font-size: 14px;
+  padding: 5px 0;
+  color: #E0F7FA;
+  transition: color 0.3s ease;
+}
+
+#recent-results ul#results li:hover {
+  color: #FFD700;
+}
+
+/* FAQ Panel - Matching Your Theme */
+.tabs__panel#tab-panel-4 {
+  width: 900px;
+  max-height: 650px;
+  overflow-y: auto;
+  padding: 15px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(0, 188, 212, 0.3);
+  border-radius: 4px;
+  color: #E0F7FA;
+}
+
+.tabs__panel#tab-panel-4 .faq-section {
+  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.tabs__panel#tab-panel-4 h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #00BCD4;
+  border-bottom: 1px solid rgba(0, 188, 212, 0.3);
+  padding-bottom: 10px;
+}
+
+.tabs__panel#tab-panel-4 h4 {
+  font-size: 20px;
+  margin: 25px 0 15px;
+  color: #FFD700;
+  border-bottom: 1px solid rgba(0, 188, 212, 0.2);
+  padding-bottom: 8px;
+}
+
+.tabs__panel#tab-panel-4 ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.tabs__panel#tab-panel-4 li {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(0, 188, 212, 0.1);
+  border-radius: 4px;
+  border-left: 4px solid #00BCD4;
+  transition: all 0.3s ease;
+}
+
+.tabs__panel#tab-panel-4 li:hover {
+  background: rgba(0, 188, 212, 0.15);
+  border-left-color: #FFD700;
+}
+
+.tabs__panel#tab-panel-4 li strong {
+  display: block;
+  font-size: 16px;
+  color: #00BCD4;
+  margin-bottom: 8px;
+}
+
+.tabs__panel#tab-panel-4 li p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #E0F7FA;
+}
+
+/* Scrollbar Styling (Matches Bid List) */
+.tabs__panel#tab-panel-4::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tabs__panel#tab-panel-4::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.tabs__panel#tab-panel-4::-webkit-scrollbar-thumb {
+  background: #00BCD4;
+  border-radius: 4px;
+}
+
+.tabs__panel#tab-panel-4::-webkit-scrollbar-thumb:hover {
+  background: #FFD700;
+}
+
+/* Firefox Scrollbar */
+.tabs__panel#tab-panel-4 {
+  scrollbar-width: thin;
+  scrollbar-color: #00BCD4 rgba(255, 255, 255, 0.1);
+}

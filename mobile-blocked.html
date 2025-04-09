@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mynerve&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0A192F; /* Dark background to match theme */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .dialog-box {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #E0F7FA;
+            font-family: 'Mynerve', sans-serif;
+            font-size: 16px;
+            background: linear-gradient(135deg, rgba(10, 25, 47, 0.95), rgba(0, 0, 0, 0.85));
+            padding: 20px;
+            border: 1px solid #00BCD4;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.5), inset 0 0 8px rgba(0, 188, 212, 0.2);
+            z-index: 1000;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            width: clamp(300px, 40vw, 600px);
+            text-align: center;
+        }
+        .dialog-box h1 {
+            margin: 0 0 15px 0;
+            color: #00BCD4; /* Adjusted to match theme */
+            font-size: 24px;
+        }
+        .dialog-box p {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        .dialog-box .gif-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dialog-box">
+        <h1>Access Denied</h1>
+        <p>Sorry, this application is not available on mobile devices.</p>
+        <p>Please access it from a desktop or laptop computer.</p>
+        <div class="gif-container">
+            <div class="tenor-gif-embed" data-postid="4830834" data-share-method="host" data-aspect-ratio="1.89855" data-width="100%">
+                <a href="https://tenor.com/view/old-man-my-computer-recycle-bin-computer-disappear-gif-4830834">Old Man My Computer GIF</a>
+                from <a href="https://tenor.com/search/old+man-gifs">Old Man GIFs</a>
+            </div>
+            <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+        </div>
+    </div>
+</body>
+</html>
