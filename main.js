@@ -25,7 +25,7 @@ import { AttackButton } from './attackButton.js';
 import { initializeChatbox } from './chatbox.js'; 
 
 // Initialize socket globally
-const socket = io("https://superseed-odyssey.dilshaner.com/");
+const socket = io("http://localhost:3000/");
 window.auctionSocket = socket;
 
 export function initGame(username) {

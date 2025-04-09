@@ -100,7 +100,7 @@ function createAuthForm() {
     const passwordInput = document.getElementById('password');
     const errorMessage = document.getElementById('error-message');
 
-    const socket = io('https://superseed-odyssey.dilshaner.com/');
+    const socket = io('http://localhost:3000/');
 
     authForm.addEventListener('submit', async (event) => {
         event.preventDefault();

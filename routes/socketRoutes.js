@@ -1,39 +1,50 @@
-// routes/socketRoutes.js
+// socketRoutes.js
 
 const { db, getUserByUsername, updateUser, createUser, addToVault, deductFromVault, getVaultBalance } = require("../db/db");
 const { AuctionSystem } = require("../auction.js");
 const { initializeLeaderboardServer } = require('../leaderboardServer.js');
 
-// Global interest pool (shared with AuctionSystem)
+// Global interest pool and singletons
 let interestPool = 0;
-let auctionSystem = null; // Singleton reference
-let leaderboardServer = null; // Singleton reference for LeaderboardServer
+let auctionSystem = null;
+let leaderboardServer = null;
+
+// Global Set to track processed Vault updates (shared across all instances)
+const processedVaultUpdates = new Set();
+
+// Flag to ensure setupSocketRoutes is only called once
+let isSocketRoutesSetup = false; // Add this line to define the variable
 
 function setupSocketRoutes(io) {
-  if (auctionSystem) {
-    console.log('SocketRoutes: Reusing existing AuctionSystem instance');
-    auctionSystem.io = io; // Update io reference if needed
-  } else {
-    console.log('SocketRoutes: Initializing new AuctionSystem');
-    auctionSystem = new AuctionSystem(io);
-    auctionSystem.interestPool = interestPool;
-  }
+    if (isSocketRoutesSetup) {
+        console.log('SocketRoutes: Already initialized, skipping setup');
+        return;
+    }
+    isSocketRoutesSetup = true;
 
-  // Initialize LeaderboardServer
-  if (leaderboardServer) {
-    console.log('SocketRoutes: Reusing existing LeaderboardServer instance');
-    leaderboardServer.io = io; // Update io reference if needed
-  } else {
-    console.log('SocketRoutes: Initializing new LeaderboardServer');
-    leaderboardServer = initializeLeaderboardServer(io);
-  }
+    if (auctionSystem) {
+        console.log('SocketRoutes: Reusing existing AuctionSystem instance');
+        auctionSystem.io = io;
+    } else {
+        console.log('SocketRoutes: Initializing new AuctionSystem');
+        auctionSystem = new AuctionSystem(io);
+        auctionSystem.interestPool = interestPool;
+    }
 
-  const defaultResources = { gold: 0, platinum: 0, iron: 0, coins: 0 };
-  const defaultRovers = {
-    GoldMiningRover: 0,
-    PlatinumMiningRover: 0,
-    IronMiningRover: 0,
-  };
+    if (leaderboardServer) {
+        console.log('SocketRoutes: Reusing existing LeaderboardServer instance');
+        leaderboardServer.io = io;
+    } else {
+        console.log('SocketRoutes: Initializing new LeaderboardServer');
+        leaderboardServer = initializeLeaderboardServer(io);
+    }
+
+    const defaultResources = { gold: 0, platinum: 0, iron: 0, coins: 0 };
+    const defaultRovers = {
+        GoldMiningRover: 0,
+        PlatinumMiningRover: 0,
+        IronMiningRover: 0,
+    };
 
   io.on("connection", (socket) => {
 
@@ -196,17 +207,35 @@ function setupSocketRoutes(io) {
       socket.emit("auction_results", auctionSystem.getRecentResults());
     });
 
-    socket.on("addToVault", async ({ username, amount }) => {
-      try {
-        await addToVault(username, amount);
-        const user = await getUserByUsername(username);
-        socket.emit("vaultUpdate", { success: true, Vault: user.Vault });
-      } catch (error) {
-        console.error("Add to Vault error:", error);
-        socket.emit("vaultUpdate", { success: false, message: error.message });
-      }
-    });
+//=====intrestCalculation=======START================
 
+socket.on("addToVault", async ({ username, amount, timestamp }) => {
+  try {
+      const updateKey = timestamp ? `${username}-${timestamp}` : `${username}-${amount}-${Date.now()}`;
+      
+      // Check if this update has already been processed globally
+      if (processedVaultUpdates.has(updateKey)) {
+          console.log(`Duplicate Vault update blocked for ${username}: ${amount}`);
+          return;
+      }
+
+      // Process the Vault update
+      await addToVault(username, amount);
+      const user = await getUserByUsername(username);
+      socket.emit("vaultUpdate", { success: true, Vault: user.Vault });
+
+      // Mark this update as processed
+      processedVaultUpdates.add(updateKey);
+
+      // Clean up after 10 minutes to prevent memory leak
+      setTimeout(() => {
+          processedVaultUpdates.delete(updateKey);
+      }, 10 * 60 * 1000);
+  } catch (error) {
+      console.error("Add to Vault error:", error);
+      socket.emit("vaultUpdate", { success: false, message: error.message });
+  }
+});
     socket.on("getVaultBalance", async ({ username }) => {
       try {
         const balance = await getVaultBalance(username);
@@ -701,7 +730,7 @@ io.to(target).emit('attack_result', {
       auctionSystem.interestPool = interestPool;
       console.log("Interest pool distributed and reset");
     });
-  }, 240000); // 4 minutes
+  },  4 * 60 * 60 * 1000); // 4 minutes
 }
 
 module.exports = { setupSocketRoutes };

@@ -301,32 +301,46 @@ export class AttackModule {
             resultDiv.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
             resultDiv.style.opacity = '0';
             resultDiv.style.transform = 'translateY(20px)';
-
+        
             const title = isVictory
                 ? '<span style="color: #00BCD4; font-size: 28px; text-shadow: 0 0 10px #00BCD4;">Glorious Victory!</span>'
                 : '<span style="color: #FF5722; font-size: 28px; text-shadow: 0 0 10px #FF5722;">Crushing Defeat!</span>';
             const message = isVictory
                 ? `Commander ${this.username}, you’ve obliterated ${this.target}!`
                 : `Your forces were annihilated by ${data.winner}. Retreat and regroup!`;
-
+        
+            // Dynamic resource display based on win/loss
+            const resourceSection = isVictory
+                ? `
+                    <span style="color: #FFD700; text-shadow: 0 0 5px #FFD700;">Spoils of War:</span><br>
+                    <span style="color: #FFD700;">${data.resourcesGained || 0} Total Value</span><br>
+                    <span style="color: #FFD700;">+${data.resourcesGainedGold || 0} Gold Ore</span><br>
+                    <span style="color: #E0F7FA;">+${data.resourcesGainedPlatinum || 0} Platinum Alloy</span><br>
+                    <span style="color: #B0BEC5;">+${data.resourcesGainedIron || 0} Iron Scrap</span><br>
+                    <span style="color: #FFCA28;">+${data.resourcesGainedCoins || 0} Galactic Credits</span>
+                `
+                : `
+                    <span style="color: #FF5722; text-shadow: 0 0 5px #FF5722;">Resources Plundered:</span><br>
+                    <span style="color: #FF5722;">${data.resourcesLost || 0} Total Value</span><br>
+                    <span style="color: #FFD700;">-${data.resourcesLostGold || 0} Gold Ore</span><br>
+                    <span style="color: #E0F7FA;">-${data.resourcesLostPlatinum || 0} Platinum Alloy</span><br>
+                    <span style="color: #B0BEC5;">-${data.resourcesLostIron || 0} Iron Scrap</span><br>
+                    <span style="color: #FFCA28;">-${data.resourcesLostCoins || 0} Galactic Credits</span>
+                `;
+        
             resultDiv.innerHTML = `
                 ${title}<br>
                 <span style="font-size: 16px; color: #E0F7FA;">${message}</span><br>
-                <span style="color: #FFD700; text-shadow: 0 0 5px #FFD700;">Spoils of War:</span><br>
-                <span style="color: #FFD700;">${data.resourcesGained || 0} Total Value</span><br>
-                <span style="color: #FFD700;">+${data.resourcesGainedGold || 0} Gold Ore</span><br>
-                <span style="color: #E0F7FA;">+${data.resourcesGainedPlatinum || 0} Platinum Alloy</span><br>
-                <span style="color: #B0BEC5;">+${data.resourcesGainedIron || 0} Iron Scrap</span><br>
-                <span style="color: #FFCA28;">+${data.resourcesGainedCoins || 0} Galactic Credits</span>
+                ${resourceSection}
             `;
-
+        
             requestAnimationFrame(() => {
                 setTimeout(() => {
                     resultDiv.style.opacity = '1';
                     resultDiv.style.transform = 'translateY(0)';
                 }, 100);
             });
-
+        
             setTimeout(() => {
                 resultDiv.style.opacity = '0';
                 setTimeout(() => {

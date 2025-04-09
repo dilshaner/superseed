@@ -1,5 +1,5 @@
 // loanManager.js
-const socket = io('https://superseed-odyssey.dilshaner.com/');
+const socket = io('http://localhost:3000/');
 
 class LoanManager {
     constructor(username) {
@@ -73,38 +73,47 @@ class LoanManager {
 
     async updateInterest() {
         if (this.interestPaused) return;
-
+    
         const now = Date.now();
-        const timeSinceLastUpdate = (now - this.lastInterestUpdate) / ( 60 * 60 * 1000); // Minutes for testing
+        const timeSinceLastUpdate = (now - this.lastInterestUpdate) / (60 * 60 * 1000); // Minutes
         if (timeSinceLastUpdate < 1) return; // Apply every minute
-
+    
         let totalInterestCollected = 0;
-
+    
         for (const loan of this.activeLoans) {
             if (!loan.isSuperCollateral) { // Normal loans only accrue interest
                 const interest = loan.amount * this.interestRate * timeSinceLastUpdate;
                 loan.interestOwed = (loan.interestOwed || 0) + interest;
-                totalInterestCollected += interest;
-
-                if (this._resources.coins >= interest) {
-                    this._resources.coins -= interest;
-                    socket.emit('addToVault', { username: this.username, amount: interest });
-                    console.log(`Added ${interest.toFixed(2)} to ${this.username}'s Vault`);
-                } else {
-                    this.interestPaused = true;
-                    alert('Insufficient coins to pay interest! Interest deductions paused.');
-                    return;
+    
+                // Only add to Vault if this interest hasn’t been processed yet
+                if (!loan.lastProcessedTimestamp || loan.lastProcessedTimestamp < this.lastInterestUpdate) {
+                    totalInterestCollected += interest;
+    
+                    if (this._resources.coins >= interest) {
+                        this._resources.coins -= interest;
+                        socket.emit('addToVault', { 
+                            username: this.username, 
+                            amount: interest,
+                            timestamp: now 
+                        });
+                        console.log(`Added ${interest.toFixed(2)} to ${this.username}'s Vault`);
+                        loan.lastProcessedTimestamp = now;
+                    } else {
+                        this.interestPaused = true;
+                        alert('Insufficient coins to pay interest! Interest deductions paused.');
+                        return;
+                    }
                 }
             }
         }
-
+    
         this.interestPool += totalInterestCollected;
         this.lastInterestUpdate = now;
-
+    
         const totalSuperCollateralLoans = this.activeLoans
             .filter(loan => loan.isSuperCollateral && !loan.isFullyPaid)
             .reduce((sum, loan) => sum + loan.amount, 0);
-
+    
         if (totalSuperCollateralLoans > 0 && this.interestPool > 0) {
             this.activeLoans.forEach(loan => {
                 if (loan.isSuperCollateral && !loan.isFullyPaid) {
@@ -114,7 +123,7 @@ class LoanManager {
             });
             this.interestPool = 0;
         }
-
+    
         this.updateServer();
         this.updateLoanList();
     }

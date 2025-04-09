@@ -4,7 +4,7 @@ export class AttackButton {
         this.socket = socket;
         this.username = username;
         this.attackInstance = null;
-        this.cooldownTime = 1 * 60 * 1000; // 10 minutes in milliseconds
+        this.cooldownTime = 10 * 60 * 1000; // 10 minutes in milliseconds
         this.initButton();
         this.checkCooldown(); // Check cooldown on initialization
     }

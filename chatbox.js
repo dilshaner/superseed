@@ -108,12 +108,12 @@ function initializeChatbox(socket, currentUsername) {
         if (isChatOpen) {
             chatbox.style.display = 'flex';
             chatbox.style.maxHeight = '400px';
-            toggleBtn.textContent = 'CHAT BOX ↑';
+            toggleBtn.textContent = 'CHAT BOX ↓'; 
         } else {
             chatbox.style.maxHeight = '0';
             setTimeout(() => {
                 chatbox.style.display = 'none';
-                toggleBtn.textContent = 'CHAT BOX ↓';
+                toggleBtn.textContent = 'CHAT BOX ↑';
             }, 300);
         }
     });

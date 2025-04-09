@@ -1,21 +1,25 @@
-// server.js
-
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
-const { setupSocketRoutes } = require('./routes/socketRoutes');
-
+const { setupSocketRoutes } = require('./routes/socketRoutes'); // Correct function name
+const { initializeLeaderboardServer } = require('./leaderboardServer');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: 'https://superseed-odyssey.dilshaner.com/', // Allow your frontend domain
+        origin: 'http://localhost:3000/', // Allow your frontend domain
         methods: ['GET', 'POST']
     }
 });
+
+// Initialize LeaderboardServer
+const leaderboardServer = initializeLeaderboardServer(io);
+
+// Pass io and leaderboardServer to socketRoutes
+setupSocketRoutes(io, leaderboardServer); // Use setupSocketRoutes, not socketRoutes
 
 // Store connected device IDs
 const connectedDevices = new Map();
@@ -23,7 +27,7 @@ const connectedDevices = new Map();
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: 'https://superseed-odyssey.dilshaner.com/' // Match your frontend domain
+    origin: 'http://localhost:3000/' // Match your frontend domain
 }));
 
 // Mobile detection middleware
@@ -68,6 +72,9 @@ io.on('connection', (socket) => {
 
     setupSocketRoutes(io, socket);
 });
+
+// Export io and leaderboardServer after initialization
+module.exports = { io, leaderboardServer }; // Moved to the end
 
 // Start the server
 const PORT = process.env.PORT || 3000; // Use environment port or default to 3000

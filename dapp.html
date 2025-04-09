@@ -4,6 +4,8 @@
     <link rel="stylesheet" href="dapp.css">
     <meta charset="UTF-8" />
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+    
   </head>
   <body>
     <div id="borrowPopup">
@@ -94,9 +96,10 @@
   </div>
   <div id="bidding-section">
     <input type="number" id="bid-amount" placeholder="Enter bid amount" min="1">
-    <button id="bidButton">Place Bid</button> <!-- Changed to id -->
+    <button id="bidButton">Place Bid</button>
+    <span id="bidCooldown" style="margin-left: 10px; color: #FFD700;"></span> <!-- Countdown display -->
     <p id="bid-error" style="color: red;"></p>
-  </div>
+</div>
   <div id="bid-list">
     <h3>Current Bids</h3>
     <ul id="bids"><li>No bids yet</li></ul>
