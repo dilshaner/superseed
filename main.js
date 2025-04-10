@@ -23,9 +23,11 @@ import { Leaderboard } from './leaderboard.js';
 import { BaseOperationsTab } from './BaseOperationsTab.js';
 import { AttackButton } from './attackButton.js'; 
 import { initializeChatbox } from './chatbox.js'; 
+import { initializeIntroButton } from './basic.js'; // New import
+
 
 // Initialize socket globally
-const socket = io("http://localhost:3000/");
+const socket = io("https://superseed-odyssey.dilshaner.com/");
 window.auctionSocket = socket;
 
 export function initGame(username) {
@@ -138,6 +140,8 @@ function setupBackgroundMusic(camera) {
   createPlatinumClusters(scene);
   createRocks(scene);
 
+  // Initialize the intro button
+  initializeIntroButton();
 
   // Initialize the  AttackButton
   const attackButton = new AttackButton(socket, username);
