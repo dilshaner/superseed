@@ -118,7 +118,7 @@ function setupBackgroundMusic(camera) {
   const bgMusic = new THREE.Audio(listener);
   const audioLoader = new THREE.AudioLoader();
 
-  audioLoader.load('/Assets/spacebg.mp3', (buffer) => {
+  audioLoader.load('/Assets/bloodcry.mp3', (buffer) => {
     bgMusic.setBuffer(buffer);
     bgMusic.setLoop(true);
     bgMusic.setVolume(0.1);
